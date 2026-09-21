@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Business Statistics Study Guide — Probability &amp; Distributions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;0,700;1,500&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js"></script>
+<style>
+  :root {
+    --bg: #12161d;
+    --bg-alt: #171c24;
+    --panel: #1b212b;
+    --panel-hi: #212834;
+    --line: #2b3341;
+    --ink: #e9e7dd;
+    --ink-dim: #a9b0bd;
+    --ink-faint: #707a8a;
+    --gold: #d4a548;
+    --gold-dim: #8a7239;
+    --teal: #5aab9e;
+    --rose: #c97b6f;
+    --radius: 10px;
+    color-scheme: dark;
+  }
+  :root:not([data-theme="dark"]) {
+    /* page is designed dark-first; keep dark regardless of system to preserve the "study lamp at night" concept */
+  }
+  * { box-sizing: border-box; }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  html, body {
+    height: 100%;
+  }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "IBM Plex Sans", system-ui, sans-serif;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3, .serif { font-family: "Lora", Georgia, serif; }
+  a { color: var(--gold); }
+
+  /* subtle paper-grain background so the dark navy isn't flat */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      radial-gradient(ellipse at 15% 0%, rgba(212,165,72,0.06), transparent 55%),
+      radial-gradient(ellipse at 85% 100%, rgba(90,171,158,0.06), transparent 55%);
+    z-index: 0;
+  }
+
+  header.top {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    background: rgba(18,22,29,0.92);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--line);
+    padding: env(safe-area-inset-top, 0px) 0 0 0;
+  }
+  .top-inner {
+    max-width: 1060px;
+    margin: 0 auto;
+    padding: 18px 20px 14px;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .brand { display: flex; flex-direction: column; gap: 2px; }
+  .brand .kicker {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 12px;
+    color: var(--gold);
+    letter-spacing: 0.02em;
+  }
+  .brand h1 {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .brand .sub { color: var(--ink-dim); font-size: 13.5px; }
+
+  nav.tabs {
+    max-width: 1060px;
+    margin: 0 auto;
+    padding: 0 20px 14px;
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  nav.tabs::-webkit-scrollbar { display: none; }
+  nav.tabs button {
+    flex: 0 0 auto;
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--ink-dim);
+    font-family: "IBM Plex Sans";
+    font-size: 13.5px;
+    font-weight: 500;
+    padding: 8px 14px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: all .15s ease;
+    white-space: nowrap;
+  }
+  nav.tabs button:hover { color: var(--ink); border-color: var(--ink-faint); }
+  nav.tabs button.active {
+    background: var(--gold);
+    border-color: var(--gold);
+    color: #1a1406;
+    font-weight: 600;
+  }
+
+  main {
+    max-width: 1060px;
+    margin: 0 auto;
+    padding: 30px 20px 90px;
+    position: relative;
+    z-index: 1;
+  }
+  section.panel { display: none; }
+  section.panel.active { display: block; animation: rise .28s ease; }
+  @keyframes rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+  .panel-head { margin-bottom: 26px; }
+  .panel-head .eyebrow {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 12px;
+    color: var(--teal);
+    margin-bottom: 6px;
+  }
+  .panel-head h2 { font-size: 28px; margin: 0 0 8px; color: var(--ink); }
+  .panel-head p { color: var(--ink-dim); font-size: 15px; max-width: 640px; line-height: 1.55; margin: 0; }
+
+  .gap-note {
+    margin-top: 14px;
+    border: 1px dashed var(--gold-dim);
+    background: rgba(212,165,72,0.06);
+    border-radius: var(--radius);
+    padding: 12px 14px;
+    font-size: 13.5px;
+    color: var(--ink-dim);
+    line-height: 1.5;
+  }
+  .gap-note b { color: var(--gold); }
+
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 20px 22px;
+    margin-bottom: 16px;
+  }
+  .card-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+  .card h3 { font-size: 18px; margin: 0; color: var(--ink); }
+  .hot-badge {
+    flex: 0 0 auto;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11px;
+    color: #1a1406;
+    background: var(--gold);
+    padding: 3px 9px;
+    border-radius: 999px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .card .breakdown { margin: 10px 0 0; padding-left: 20px; color: var(--ink-dim); line-height: 1.65; font-size: 14.5px; }
+  .card .breakdown li { margin-bottom: 5px; }
+  .card .breakdown li b, .card .breakdown li strong { color: var(--ink); font-weight: 600; }
+
+  .formula-box {
+    background: var(--bg-alt);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin: 12px 0;
+    overflow-x: auto;
+    color: var(--ink);
+    font-size: 15px;
+  }
+  .formula-box .flabel {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11px;
+    color: var(--ink-faint);
+    margin-bottom: 6px;
+    text-transform: none;
+  }
+
+  .analogy {
+    margin-top: 14px;
+    border-left: 3px solid var(--teal);
+    background: rgba(90,171,158,0.07);
+    padding: 10px 14px;
+    border-radius: 0 8px 8px 0;
+    font-size: 14.5px;
+    line-height: 1.6;
+    color: var(--ink);
+  }
+  .analogy .alabel {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11px;
+    color: var(--teal);
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .example {
+    margin-top: 12px;
+    background: var(--bg-alt);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-size: 14px;
+    color: var(--ink-dim);
+    line-height: 1.55;
+  }
+  .example .elabel {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11px;
+    color: var(--rose);
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .terms {
+    margin-top: 14px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .term-chip {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 12px;
+    color: var(--gold);
+    border: 1px solid var(--gold-dim);
+    background: rgba(212,165,72,0.05);
+    padding: 3px 10px;
+    border-radius: 999px;
+  }
+
+  /* Overview */
+  .overview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 14px;
+    margin-top: 20px;
+  }
+  .ov-card {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 18px;
+    cursor: pointer;
+    transition: border-color .15s ease, transform .15s ease;
+  }
+  .ov-card:hover { border-color: var(--gold-dim); transform: translateY(-2px); }
+  .ov-card .n { font-family: "IBM Plex Mono", monospace; font-size: 11px; color: var(--teal); }
+  .ov-card h4 { font-family: "Lora"; font-size: 17px; margin: 6px 0 6px; color: var(--ink); }
+  .ov-card p { font-size: 13px; color: var(--ink-dim); margin: 0; line-height: 1.5; }
+
+  .howto {
+    margin-top: 28px;
+    padding: 18px 20px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+  }
+  .howto h4 { margin: 0 0 8px; font-size: 15px; color: var(--gold); font-family: "IBM Plex Mono", monospace; font-weight: 600; }
+  .howto ul { margin: 0; padding-left: 20px; color: var(--ink-dim); font-size: 14px; line-height: 1.7; }
+
+  /* Glossary */
+  .glossary-search {
+    width: 100%;
+    max-width: 340px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    color: var(--ink);
+    padding: 10px 14px;
+    font-size: 14px;
+    font-family: "IBM Plex Sans";
+    margin-bottom: 20px;
+  }
+  .glossary-search:focus { outline: none; border-color: var(--gold-dim); }
+  .glossary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 12px;
+  }
+  .gterm {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 13px 15px;
+  }
+  .gterm .gt-term { font-weight: 600; color: var(--gold); font-size: 14px; margin-bottom: 4px; }
+  .gterm .gt-def { font-size: 13.5px; color: var(--ink-dim); line-height: 1.5; }
+  .gterm .gt-session { font-family: "IBM Plex Mono", monospace; font-size: 10.5px; color: var(--ink-faint); margin-top: 6px; display:block; }
+
+  /* Exam focus */
+  .focus-item {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--gold);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    padding: 16px 20px;
+    margin-bottom: 14px;
+  }
+  .focus-item h3 { font-size: 16px; margin: 0 0 6px; color: var(--ink); }
+  .focus-item .why { font-size: 13.5px; color: var(--ink-dim); line-height: 1.6; }
+  .focus-item .sess { font-family: "IBM Plex Mono", monospace; font-size: 11px; color: var(--teal); margin-bottom: 6px; display: block; }
+
+  .caveat {
+    background: rgba(201,123,111,0.08);
+    border: 1px solid rgba(201,123,111,0.35);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    margin-bottom: 22px;
+    font-size: 14px;
+    color: var(--ink-dim);
+    line-height: 1.6;
+  }
+  .caveat b { color: var(--rose); }
+
+  footer {
+    max-width: 1060px;
+    margin: 0 auto;
+    padding: 10px 20px 50px;
+    color: var(--ink-faint);
+    font-size: 12.5px;
+    text-align: center;
+  }
+
+  mjx-container { color: var(--ink) !important; }
+
+  @media (max-width: 600px) {
+    .brand h1 { font-size: 19px; }
+    .panel-head h2 { font-size: 23px; }
+    .card { padding: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-inner">
+    <div class="brand">
+      <span class="kicker">STUDY GUIDE · BUSINESS STATISTICS</span>
+      <h1>Probability &amp; Distributions</h1>
+      <span class="sub">Sessions 2–5 · numerical measures through continuous distributions</span>
+    </div>
+  </div>
+  <nav class="tabs" id="tabs"></nav>
+</header>
+
+<main id="main"></main>
+
+<footer>Built from your five uploaded slide decks (Essentials / Modern Business Statistics, Anderson et al.) — use alongside your lecture notes, not as a replacement for them.</footer>
+
+<script>
+MathJax = {
+  tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']] },
+  chtml: { displayAlign: 'left' }
+};
+</script>
+
+<script>
+// ---------------------------------------------------------------------
+// CONTENT DATA
+// ---------------------------------------------------------------------
+
+const SECTIONS = [
+  { id: "s2", label: "Descriptive Stats", number: "Session 2", title: "Descriptive Statistics: Numerical Measures",
+    blurb: "How to describe a data set with a handful of numbers: where its centre is, how spread out it is, what shape it has, and how it moves with another variable.",
+    topics: [
+      {
+        title: "Statistic vs. Parameter",
+        hot: false,
+        breakdown: [
+          "A number calculated from a <b>sample</b> is a <b>sample statistic</b> (e.g. sample mean, $\\bar{x}$).",
+          "A number calculated from an entire <b>population</b> is a <b>population parameter</b> (e.g. population mean, $\\mu$).",
+          "A sample statistic is used as the <b>point estimator</b> of the matching population parameter — your best single guess at the real, usually-unknowable population value."
+        ],
+        analogy: "Think of a pot of soup. Tasting one spoonful is your <i>sample statistic</i> — it estimates the flavour of the whole pot (the <i>population parameter</i>), which you'd only know for certain if you drank it all.",
+        terms: ["sample statistic", "population parameter", "point estimator"]
+      },
+      {
+        title: "Measures of Location: Mean, Median, Mode, Weighted Mean",
+        hot: true,
+        hotReason: "Foundational — appears in nearly every stats paper, often as a full worked question by hand.",
+        breakdown: [
+          "<b>Mean</b> ($\\bar{x}$ for a sample, $\\mu$ for a population): the arithmetic average — sum of all values divided by how many there are. Most-used, but pulled around by extreme values.",
+          "<b>Median</b>: the middle value once data is sorted. Odd count → the exact middle. Even count → average of the two middle values. Preferred when data has extreme values (e.g. income, property prices).",
+          "<b>Mode</b>: the most frequently occurring value. Two modes = <b>bimodal</b>; more than two = <b>multimodal</b>.",
+          "<b>Weighted mean</b>: each value is multiplied by a weight reflecting its importance (e.g. credit hours in a GPA) before averaging — <i>not</i> every value counts equally."
+        ],
+        formula: "\\bar{x} = \\dfrac{\\sum x_i}{n} \\qquad \\mu = \\dfrac{\\sum x_i}{N} \\qquad \\bar{x}_w = \\dfrac{\\sum w_i x_i}{\\sum w_i}",
+        analogy: "Mean, median and mode are three different ways to describe the 'typical' person at a party. <b>Mean</b> = pool everyone's cash and split it evenly. <b>Median</b> = line everyone up by wealth and pick the middle person. <b>Mode</b> = whichever amount of cash the most people happen to be carrying.",
+        example: "Monthly starting salaries (n=12): mean = 5,940; median = 5,905 (average of 6th &amp; 7th sorted values); mode = 5,880 (the only value repeated).",
+        terms: ["mean", "median", "mode", "weighted mean", "bimodal", "multimodal"]
+      },
+      {
+        title: "Measures of Variability: Range, Variance, SD, CV",
+        hot: true,
+        hotReason: "Nearly always tested together as one multi-part question (range → variance → SD → CV from the same data set).",
+        breakdown: [
+          "<b>Range</b> = largest value − smallest value. Simple, but only uses two data points, so it's very sensitive to outliers.",
+          "<b>Variance</b> = the average of the squared deviations from the mean. Uses every value in the data set. Population divides by $N$; a <i>sample</i> divides by $n-1$ (not $n$) so it isn't biased when estimating the population variance.",
+          "<b>Standard deviation</b> = the positive square root of the variance. Its big advantage over variance: it's back in the <i>original units</i> of the data, so it's easier to interpret.",
+          "<b>Coefficient of variation (CV)</b> = standard deviation relative to the mean, expressed as a percentage. Lets you compare spread across data sets that use different units or have very different means."
+        ],
+        formula: "s^2 = \\dfrac{\\sum (x_i-\\bar{x})^2}{n-1} \\qquad s=\\sqrt{s^2} \\qquad CV = \\left(\\dfrac{s}{\\bar{x}}\\right)\\times 100\\%",
+        analogy: "Standard deviation is like measuring how far students in a class sit from the average seat — a small SD means everyone's clustered near the middle rows; a large SD means seats are scattered from the front row to the back wall.",
+        example: "Starting salary data: variance ≈ 27,440.91; standard deviation ≈ 165.65; so CV ≈ (165.65/5,940) × 100% ≈ 2.8% — the spread is small relative to the average salary.",
+        terms: ["range", "variance", "standard deviation", "coefficient of variation"]
+      },
+      {
+        title: "Distribution Shape: Skewness",
+        hot: true,
+        hotReason: "A classic 'identify and explain' exam question — comparing mean vs. median position tells you the skew direction.",
+        breakdown: [
+          "<b>Symmetric</b> distribution: skewness = 0; mean = median = mode; bell-shaped/normal.",
+          "<b>Negatively skewed (left-skewed)</b>: a long tail to the <i>left</i> caused by a few unusually <i>small</i> values; mean is usually <i>less than</i> the median.",
+          "<b>Positively skewed (right-skewed)</b>: a long tail to the <i>right</i> caused by a few unusually <i>large</i> values; mean is usually <i>more than</i> the median.",
+          "Rule of thumb for Pearson's coefficient of skewness: values beyond ±1 signal excessive skewness driven by a few extreme outliers."
+        ],
+        analogy: "Picture a tug-of-war between the data values. The mean is the flag in the middle of the rope — it always gets dragged toward whichever side has the extreme outliers. The median holds its ground, since it only cares about rank order, not magnitude.",
+        terms: ["skewness", "symmetric distribution", "negatively skewed", "positively skewed"]
+      },
+      {
+        title: "Association Between Two Variables: Covariance & Correlation",
+        hot: true,
+        hotReason: "Frequently paired with a small x–y table and asked as a full calculation.",
+        breakdown: [
+          "<b>Covariance</b> measures the <i>direction</i> of a linear relationship: positive = variables move together; negative = they move oppositely. Its size isn't standardised, so it's hard to compare across different pairs of variables.",
+          "<b>Correlation coefficient (r)</b> is covariance standardised to always fall between −1 and +1, so it tells you both <i>direction</i> and <i>strength</i>.",
+          "r near +1 → strong positive relationship; r near −1 → strong negative relationship; r near 0 → weak or no linear relationship.",
+          "Correlation is <i>not</i> causation — two variables can move together without one causing the other."
+        ],
+        formula: "s_{xy} = \\dfrac{\\sum (x_i-\\bar{x})(y_i-\\bar{y})}{n-1} \\qquad r_{xy} = \\dfrac{s_{xy}}{s_x s_y}",
+        analogy: "Covariance is like whispering — you can tell whether the message is 'yes' or 'no' (direction), but the volume depends on the room (the units), so you can't compare loudness across rooms. Correlation is the same message spoken at a fixed, standard volume every time — now you can fairly compare strength across any pair of variables.",
+        example: "San Francisco Electronics store: more weekend commercials aired ↔ higher next-week sales. Sample covariance = 11, sample correlation ≈ 0.93 — a strong positive relationship.",
+        terms: ["covariance", "correlation coefficient"]
+      }
+    ]
+  },
+
+  { id: "s3", label: "Probability Basics", number: "Session 3", title: "Introduction to Probability",
+    blurb: "The vocabulary and rules for quantifying uncertainty — from a single event's likelihood to how two events interact.",
+    topics: [
+      {
+        title: "Experiments, Sample Space & Events",
+        hot: false,
+        breakdown: [
+          "An <b>experiment</b> is any process that generates well-defined outcomes (rolling a die, surveying a customer).",
+          "The <b>sample space (S)</b> is the set of <i>all</i> possible outcomes; each individual outcome is a <b>sample point</b>.",
+          "An <b>event</b> is any collection of one or more outcomes from the sample space (a subset of S).",
+          "<b>Simple event</b>: exactly one outcome (rolling a 4). <b>Compound event</b>: two or more outcomes (rolling an even number). <b>Certain event</b>: guaranteed to happen (P=1). <b>Impossible event</b>: can never happen (P=0)."
+        ],
+        analogy: "The sample space is the full menu at a restaurant. An event is any subset of dishes you'd be happy to be served — maybe just one dish (simple event), or 'anything vegetarian' (compound event).",
+        terms: ["experiment", "sample space", "sample point", "event", "simple event", "compound event"]
+      },
+      {
+        title: "Types & Methods of Assigning Probability",
+        hot: false,
+        breakdown: [
+          "<b>Subjective probability</b>: based on judgement, experience or intuition — can't be statistically verified.",
+          "<b>Objective probability</b>: can be verified through data; derived <i>a priori</i> (known in advance, e.g. dice), <i>empirically</i> (observed through data collection), or <i>mathematically</i> (via theoretical formulas — the topic of Sessions 4 &amp; 5).",
+          "Two basic rules any valid probability assignment must satisfy: every outcome's probability is between 0 and 1 inclusive, and all outcome probabilities for an experiment must sum to exactly 1.",
+          "<b>Classical method</b>: equally likely outcomes, $P = 1/n$. <b>Relative frequency method</b>: probability = observed frequency ÷ total observations. <b>Subjective method</b>: a reasoned personal estimate."
+        ],
+        formula: "P(A)=\\dfrac{r}{n}\\quad\\text{(classical/relative frequency, where }r\\text{ = favourable outcomes, }n\\text{ = total outcomes)}",
+        analogy: "Classical method is knowing a coin is fair before you ever flip it. Relative frequency is figuring out a coin might be biased only after flipping it 100 times and counting. Subjective is your gut feeling before either of those exists — like a manager's 'gut sense' that a new product will sell.",
+        terms: ["subjective probability", "objective probability", "classical method", "relative frequency method", "subjective method"]
+      },
+      {
+        title: "Properties & the Complement Rule",
+        hot: false,
+        breakdown: [
+          "Every probability lies between 0 and 1 inclusive.",
+          "P(impossible event) = 0; P(certain event) = 1.",
+          "The probabilities of all outcomes in a collectively exhaustive set sum to 1.",
+          "<b>Complement</b>: the probability that an event does <i>not</i> happen is $P(A^c)=1-P(A)$."
+        ],
+        formula: "P(A^c) = 1 - P(A)",
+        analogy: "If there's a 7% chance a manufactured part is defective, the complement rule instantly tells you there's a 93% chance it's fine — you never had to separately measure the 'fine' outcomes.",
+        terms: ["complement"]
+      },
+      {
+        title: "Union, Intersection, Mutually Exclusive & Collectively Exhaustive",
+        hot: true,
+        hotReason: "The building blocks for every addition-law and Venn-diagram-style question.",
+        breakdown: [
+          "<b>Union</b> ($A \\cup B$): outcomes in A, or B, or both. Keyword: <i>'or'</i>.",
+          "<b>Intersection</b> ($A \\cap B$): outcomes in both A and B simultaneously. Keyword: <i>'and'</i>.",
+          "<b>Mutually exclusive</b>: A and B share no outcomes — if one happens, the other cannot; $P(A \\cap B)=0$.",
+          "<b>Collectively exhaustive</b>: the union of all the events covers the entire sample space — at least one of them is guaranteed to occur."
+        ],
+        analogy: "Union is 'raise your hand if you like tea OR coffee' (some hands go up for both). Intersection is 'stay seated only if you like tea AND coffee' — a smaller, overlapping group.",
+        terms: ["union", "intersection", "mutually exclusive", "collectively exhaustive"]
+      },
+      {
+        title: "Addition Law",
+        hot: true,
+        hotReason: "One of the most consistently examined formulas — usually via a contingency table (e.g. company size × sector).",
+        breakdown: [
+          "Used to find the probability of A, or B, or both occurring — i.e. the union.",
+          "For events that are <i>not</i> mutually exclusive, you must subtract the overlap once so it isn't double-counted.",
+          "For <i>mutually exclusive</i> events, there's no overlap to subtract — simply add the two probabilities."
+        ],
+        formula: "P(A \\cup B) = P(A) + P(B) - P(A \\cap B) \\qquad \\text{(mutually exclusive: } P(A \\cup B)=P(A)+P(B)\\text{)}",
+        analogy: "Counting people who like tea OR coffee: if you just add 'tea-drinkers' + 'coffee-drinkers', anyone who likes both gets counted twice. Subtracting the 'likes both' group once fixes the double count.",
+        terms: ["addition law"]
+      },
+      {
+        title: "Marginal, Joint & Conditional Probability",
+        hot: true,
+        hotReason: "Contingency-table questions ('given that it's a medium-sized company...') appear almost every paper.",
+        breakdown: [
+          "<b>Marginal probability</b> $P(A)$: the probability of a single event, ignoring any other variable — usually the row or column total in a table, divided by the grand total.",
+          "<b>Joint probability</b> $P(A \\cap B)$: the probability that two events happen together — a single cell in a contingency table divided by the grand total.",
+          "<b>Conditional probability</b> $P(A|B)$: the probability of A given that B has already occurred — the sample space shrinks down to just B's outcomes."
+        ],
+        formula: "P(A|B) = \\dfrac{P(A \\cap B)}{P(B)}",
+        analogy: "Conditional probability is updating a prediction once new information arrives — like re-estimating your commute time once you already know it's raining, instead of using the average across all weather.",
+        terms: ["marginal probability", "joint probability", "conditional probability"]
+      },
+      {
+        title: "Multiplication Law & Statistical Independence",
+        hot: true,
+        hotReason: "Consistently tested, and often combined with the independence test as a two-part question.",
+        breakdown: [
+          "The multiplication law finds the probability of A <i>and</i> B occurring together (the intersection) in one trial.",
+          "For <b>dependent</b> events: $P(A \\cap B)=P(B)\\,P(A|B)$ — rearranged from the conditional probability formula.",
+          "For <b>independent</b> events (A's occurrence has no effect on B, and vice versa): it simplifies to the plain product of the two marginal probabilities.",
+          "<b>Test for independence</b>: A and B are independent exactly when $P(A|B)=P(A)$ — knowing B happened tells you nothing new about A."
+        ],
+        formula: "P(A \\cap B) = P(B)\\,P(A|B) \\qquad \\text{independent: } P(A \\cap B) = P(A)\\,P(B)",
+        analogy: "The multiplication rule for a sequence of events is like a combination lock — the odds of landing the whole correct sequence come from multiplying the odds at each dial.",
+        example: "80% of customers pay for gas with a credit card. P(both of the next two customers use a card) = 0.8 × 0.8 = 0.64 (assuming independence).",
+        terms: ["multiplication law", "statistically independent events", "statistically dependent events"]
+      },
+      {
+        title: "Mutually Exclusive vs. Independent — the classic mix-up",
+        hot: true,
+        hotReason: "Explicitly flagged in the slides as commonly confused — a frequent 'true/false, explain' exam item.",
+        breakdown: [
+          "These are <i>different</i> concepts, and it's easy to conflate them.",
+          "Mutually exclusive events <b>cannot</b> occur together — if one happens, the other's probability drops to zero, which actually makes them <i>dependent</i> on each other.",
+          "Independent events <b>can</b> occur together; one occurring simply has no influence on the other's probability.",
+          "Two events with nonzero probabilities can never be both mutually exclusive and independent at the same time."
+        ],
+        analogy: "Mutually exclusive is like two doors on an airlock — only one can ever be open at once. Independent is like flipping two coins in separate rooms: both can land heads at the same time, but neither flip influences the other.",
+        terms: ["mutually exclusive", "statistically independent events"]
+      },
+      {
+        title: "Probability Trees",
+        hot: false,
+        breakdown: [
+          "A graphical way to apply probability rules when several events occur in sequence.",
+          "Each branch represents one possible outcome of a step; multiplying probabilities <i>along</i> a path gives that path's joint probability.",
+          "To answer 'either/or' questions across several branches (e.g. 'product fails'), add up the joint probabilities of every branch that satisfies the condition."
+        ],
+        analogy: "A probability tree is a route map. Each fork is a decision point; multiplying the odds along one full route from start to finish tells you the odds of taking exactly that route.",
+        example: "Two independent components: 5% chance component 1 fails, 10% chance component 2 fails. P(product fails) = P(F1∩S2) + P(S1∩F2) + P(F1∩F2) = 0.045 + 0.095 + 0.005 = 0.145 (14.5%).",
+        terms: ["probability tree"]
+      }
+    ]
+  },
+
+  { id: "s3a", label: "Counting Rules", number: "Session 3a", title: "Counting Rules",
+    blurb: "Ways to count possible outcomes without listing every one individually — the toolkit behind permutations, combinations and probability calculations with large sample spaces.",
+    topics: [
+      {
+        title: "The Multiplication (Factorial) Rule",
+        hot: true,
+        hotReason: "Almost always the opening warm-up question before permutations/combinations are tested.",
+        breakdown: [
+          "$n!$ ('n factorial') is the product of all positive integers up to $n$: $n! = n \\times (n-1) \\times \\dots \\times 1$.",
+          "It gives the number of ways to arrange <i>all</i> $n$ distinct objects in order.",
+          "For a multi-step experiment with $k$ steps, where step 1 has $n_1$ possible results, step 2 has $n_2$, and so on, the total number of outcomes is $n_1 \\times n_2 \\times \\dots \\times n_k$."
+        ],
+        formula: "n! = n(n-1)(n-2)\\cdots 1",
+        analogy: "Arranging books on a shelf: for the first slot you have n choices, for the next slot only n−1 remain (one book is already placed), and so on — exactly the chain of multiplication that builds n!.",
+        example: "4 distinct books on a shelf: 4! = 4×3×2×1 = 24 possible arrangements. Choosing a hat (3 options) and a coat (2 options): 3×2 = 6 possible outfits.",
+        terms: ["factorial", "multiplication rule"]
+      },
+      {
+        title: "Combinations — order doesn't matter",
+        hot: true,
+        hotReason: "Consistently appears alongside permutations as a compare-and-contrast question.",
+        breakdown: [
+          "Counts how many different groups of $r$ objects can be formed from $n$ objects when the <i>order of selection doesn't matter</i>.",
+          "Choosing {chocolate chips, sprinkles} is treated the same as choosing {sprinkles, chocolate chips} — one combination, not two."
+        ],
+        formula: "{}_nC_r = \\dfrac{n!}{r!(n-r)!}",
+        analogy: "Combinations are like picking a two-person committee — whichever order you name the two people in, it's still the same committee.",
+        example: "3 toppings (chocolate chips, sprinkles, nuts), choose 2: only 3 possible combinations — order doesn't create new ones.",
+        terms: ["combination"]
+      },
+      {
+        title: "Permutations — order matters",
+        hot: true,
+        hotReason: "Paired with combinations in almost every counting-rules question; watch for 'assignment/ordering' wording, which signals permutations.",
+        breakdown: [
+          "Counts how many ordered arrangements of $r$ objects can be selected from $n$ objects, where <i>order matters</i>.",
+          "The same objects in a different order count as a <i>different</i> outcome."
+        ],
+        formula: "{}_nP_r = \\dfrac{n!}{(n-r)!}",
+        analogy: "Permutations are like awarding gold, silver and bronze medals to runners — the same three runners in a different finishing order is a completely different result.",
+        example: "Letters A, B, C arranged in order: 6 permutations (ABC, ACB, BAC, BCA, CAB, CBA) — every order is distinct, unlike a combination.",
+        terms: ["permutation"]
+      },
+      {
+        title: "Choosing Between Them",
+        hot: false,
+        breakdown: [
+          "Ask: <i>does rearranging the same selected items create a new outcome?</i>",
+          "If yes → permutation. If no → combination.",
+          "'Assignments', 'orderings', 'arrangements', 'rankings' → permutations. 'Groups', 'selections', 'committees', 'subsets' → combinations."
+        ],
+        analogy: "'AB' and 'BA' are different permutations, but the same combination — the exact test to run on any exam question wording.",
+        terms: ["combination", "permutation"]
+      }
+    ]
+  },
+
+  { id: "s4", label: "Discrete Distributions", number: "Session 4", title: "Discrete Probability Distributions",
+    blurb: "Random variables, and the theoretical formulas that let you calculate probabilities directly — instead of gathering empirical data every time.",
+    topics: [
+      {
+        title: "Random Variables: Discrete vs. Continuous",
+        hot: true,
+        hotReason: "A guaranteed 'classify each variable as discrete or continuous' question appears in this exact form in the slides' own practice questions.",
+        breakdown: [
+          "A <b>random variable</b> is a numerical description of an experiment's outcome.",
+          "<b>Discrete random variable</b>: a finite number of values, or an infinite but <i>countable</i> sequence (0, 1, 2, 3, ...). Example: number of parts passed on a CPA exam (0–4); number of cars arriving at a toll booth.",
+          "<b>Continuous random variable</b>: can take <i>any</i> numerical value within an interval. Example: weight in kilograms, distance travelled, time to complete a task.",
+          "Rule of thumb: if you'd naturally <i>count</i> it, it's discrete; if you'd naturally <i>measure</i> it, it's continuous."
+        ],
+        analogy: "A vending machine's coin slot only accepts whole coins (discrete) — you can't insert '2.5 coins'. A fuel gauge, on the other hand, can show any level in the tank (continuous) — 47.3% full is entirely possible.",
+        example: "Mass of cans on a production line → continuous. Number of employees in a company → discrete. Number of households with solar panels → discrete. Distance travelled daily by a courier truck → continuous.",
+        terms: ["random variable", "discrete random variable", "continuous random variable"]
+      },
+      {
+        title: "Discrete Probability Distributions & f(x)",
+        hot: false,
+        breakdown: [
+          "A probability distribution describes how probabilities are spread across all the possible values of a random variable.",
+          "It can be shown as a table, a graph, or a formula, denoted $f(x)$, giving the probability for each possible value of x.",
+          "Common discrete distributions defined by formula: discrete-uniform, <b>binomial</b>, <b>Poisson</b>, hypergeometric."
+        ],
+        analogy: "Rolling a fair six-sided die: the probability distribution simply lists each face (1–6) alongside its 1/6 chance — the whole 'pattern' of the experiment in one table.",
+        terms: ["probability distribution", "probability function f(x)"]
+      },
+      {
+        title: "The Binomial Distribution",
+        hot: true,
+        hotReason: "The single most heavily drilled topic in this deck — five separate worked examples. Expect a full calculation question.",
+        breakdown: [
+          "Applies whenever an experiment has these <b>four properties</b>: (1) a <b>fixed number of trials</b>, $n$; (2) each trial has only <b>two outcomes</b> — success or failure; (3) <b>constant probability of success</b>, $p$, on every trial; (4) trials are <b>independent</b> of each other.",
+          "$x$ = the number of successes observed in $n$ trials. The formula gives the probability of getting exactly $x$ successes.",
+          "The $\\binom{n}{x}$ term counts <i>how many different orderings</i> of x successes are possible (it's the combinations formula from Session 3a in disguise); $p^x(1-p)^{n-x}$ is the probability of any <i>one</i> such ordering.",
+          "Mean (expected value) = $np$; variance = $np(1-p)$; standard deviation = $\\sqrt{np(1-p)}$.",
+          "Excel: <code>BINOM.DIST(x, n, p, FALSE)</code> for an exact probability; <code>TRUE</code> for the cumulative probability up to x."
+        ],
+        formula: "f(x) = \\binom{n}{x}p^x(1-p)^{n-x} \\qquad \\mu = np \\qquad \\sigma = \\sqrt{np(1-p)}",
+        analogy: "Think of a basketball player with a fixed, known 80% free-throw success rate taking 10 shots. Each shot is a trial with the same success probability, shots don't affect each other, and you're counting successes out of a fixed number of attempts — a textbook binomial setup.",
+        example: "One in four clients requests an Opel rental. Out of 5 random bookings, what's the probability exactly 2 requested an Opel? → n=5, p=0.25, x=2, using the formula above. Insurance example: n=10, p=0.20 (policies surrendered) → mean = 2 surrendered policies, SD ≈ 1.27.",
+        terms: ["binomial experiment", "binomial probability distribution", "expected value", "variance"]
+      },
+      {
+        title: "Poisson Distribution — flagged, not detailed in these slides",
+        hot: false,
+        breakdown: [
+          "The learning objectives and topic list both name the <b>Poisson distribution</b> as a second key discrete distribution alongside the binomial.",
+          "However, the uploaded deck doesn't go on to cover its formula or worked examples — it stops after the binomial section."
+        ],
+        note: "Gap in these slides: if your course syllabus or past papers reference the Poisson distribution (used for counting rare events over a fixed interval, e.g. calls per hour, defects per batch), you'll need your separate lecture notes or textbook chapter — it isn't in this file.",
+        terms: ["Poisson distribution"]
+      }
+    ]
+  },
+
+  { id: "s5", label: "Continuous Distributions", number: "Session 5", title: "Continuous Probability Distributions",
+    blurb: "How probability works when a variable can take any value in a range — and the normal distribution, the most important continuous distribution in statistics.",
+    topics: [
+      {
+        title: "Continuous Random Variables & Area as Probability",
+        hot: true,
+        hotReason: "The core concept underlying every z-table question that follows — expect at least a conceptual question on this.",
+        breakdown: [
+          "A continuous random variable can take <i>any</i> value in an interval, so it's meaningless to ask for the probability of one <i>exact</i> value — that probability is always zero.",
+          "Instead, probability is found for a <i>range</i>: the probability that x falls between $x_1$ and $x_2$ equals the <b>area under the probability density function (PDF)</b> between those two points.",
+          "The total area under any PDF always equals 1 (100% of all possible outcomes)."
+        ],
+        analogy: "Think of probability as water poured under a curve. You can scoop out the amount of water between two markers to get the probability of landing in that range — but an infinitely thin single point can never hold any water on its own.",
+        terms: ["continuous random variable", "probability density function (PDF)"]
+      },
+      {
+        title: "The Normal Distribution",
+        hot: true,
+        hotReason: "The most-used distribution in the whole course — near-guaranteed on any final paper.",
+        breakdown: [
+          "The most widely used continuous distribution; symmetric, bell-shaped, defined entirely by its mean ($\\mu$) and standard deviation ($\\sigma$).",
+          "Mean = median = mode, all at the centre; skewness = 0.",
+          "The mean can be any value (negative, zero, positive); the standard deviation controls the width — a bigger $\\sigma$ means a wider, flatter curve.",
+          "<b>Empirical Rule (68–95–99.7 Rule)</b>: about 68.3% of values fall within ±1 SD of the mean, 95.4% within ±2 SD, and 99.7% within ±3 SD."
+        ],
+        analogy: "Your daily commute time: most days you're within a few minutes of your average (≈68% within 1 SD), almost every day you're within double that margin (≈95% within 2 SD), and it's extremely rare to be further off than triple that margin (≈99.7% within 3 SD).",
+        terms: ["normal distribution", "empirical rule"]
+      },
+      {
+        title: "Standard Normal Distribution & Z-Scores",
+        hot: true,
+        hotReason: "The core exam skill of this session — converting x to z and reading the z-table appears repeatedly as worked practice.",
+        breakdown: [
+          "The <b>standard normal distribution</b> is a special normal distribution with mean 0 and standard deviation 1, using the variable <b>z</b>.",
+          "Any normal variable x can be converted into a z-value, which measures how many standard deviations x lies from its mean.",
+          "Once converted to z, you can read probabilities directly off a standard z-table — this works for <i>any</i> normal distribution, regardless of its original mean or SD.",
+          "The reverse is also tested: given a probability, find the corresponding z-value (using the table 'backwards'), then convert that z back into an x-value using $x = \\mu + z\\sigma$."
+        ],
+        formula: "z = \\dfrac{x-\\mu}{\\sigma} \\qquad x = \\mu + z\\sigma",
+        analogy: "Z-scores put different exams onto one common ruler. A mark of 72/100 in one course and 41/50 in another aren't directly comparable — but converting both to z-scores tells you, fairly, which result was actually the stronger performance relative to its own class.",
+        example: "μ=20, σ=4, x=14 → z = (14−20)/4 = −1.5 (i.e. 14 lies 1.5 SDs below the mean). For P(z ≤ 1.00): the z-table gives 0.8413.",
+        terms: ["standard normal distribution", "z-score", "z-value"]
+      },
+      {
+        title: "Using Excel for Normal Probabilities",
+        hot: false,
+        breakdown: [
+          "<code>NORM.S.DIST(z, TRUE)</code>: cumulative probability for a given z (standard normal).",
+          "<code>NORM.S.INV(probability)</code>: the z-value for a given cumulative probability.",
+          "<code>NORM.DIST(x, mean, sd, TRUE)</code>: cumulative probability for a given x (any normal distribution).",
+          "<code>NORM.INV(probability, mean, sd)</code>: the x-value for a given cumulative probability."
+        ],
+        terms: ["NORM.DIST", "NORM.INV", "NORM.S.DIST", "NORM.S.INV"]
+      },
+      {
+        title: "Uniform & Exponential Distributions — flagged, not detailed in these slides",
+        hot: false,
+        breakdown: [
+          "The session's title slide lists <b>three</b> continuous distributions — Uniform, Normal, and Exponential — and shows all three shapes on its cover graphic.",
+          "The rest of the deck, however, only develops the <b>Normal</b> distribution in depth (with formulas, worked examples, z-tables and Excel functions). Uniform and Exponential aren't covered beyond that opening slide."
+        ],
+        note: "Gap in these slides: if uniform or exponential distributions are on your syllabus or in past papers, source their formulas from your textbook or full lecture notes — they aren't developed further in this uploaded file.",
+        terms: ["uniform probability distribution", "exponential probability distribution"]
+      }
+    ]
+  }
+];
+
+const EXAM_FOCUS = [
+  {
+    title: "Binomial distribution calculations",
+    sess: "Session 4",
+    why: "By far the most heavily drilled topic across the decks — five separate worked examples (car rentals, insurance policies, retail customers, CPA exam pass rates, retirement savings). When a lecturer builds that many practice problems around one formula, it's a strong signal it's core to the assessment. Expect to (a) verify the four binomial conditions, then (b) compute an exact, 'at most', or 'at least' probability by hand."
+  },
+  {
+    title: "Z-scores and the standard normal table",
+    sess: "Session 5",
+    why: "The entire second half of Session 5 is built around converting x-values to z-values and reading probabilities off the table — forwards (find P given z or x) and backwards (find z or x given a probability). This is the standard 'normal distribution' question format in business statistics papers generally."
+  },
+  {
+    title: "Mean, median, mode, variance, standard deviation — by hand",
+    sess: "Session 2",
+    why: "These fundamentals show up as either a stand-alone multi-part question on a raw data set, or embedded inside a bigger question (e.g. compute measures, then comment on skewness). Comparable papers from other Southern African business-statistics courses consistently open with exactly this kind of question."
+  },
+  {
+    title: "Addition and multiplication laws using contingency tables",
+    sess: "Session 3",
+    why: "Multiple worked examples in the slides use a company-classification table (size × sector) to test marginal, joint, and conditional probability alongside the addition and multiplication laws — a format that's easy to adapt into a new table for an exam."
+  },
+  {
+    title: "Permutations vs. combinations",
+    sess: "Session 3a",
+    why: "Almost every counting-rules paper tests the ability to tell these apart from word problems, then apply the correct formula — the slides' own 'Summary' slide is built explicitly around this comparison."
+  },
+  {
+    title: "Classifying variables as discrete or continuous",
+    sess: "Session 4",
+    why: "This exact practice question ('is X discrete or continuous?') appears twice in the deck with slightly different variables — a strong sign it's a recurring exam item, often worth easy marks if you know the count-vs-measure rule of thumb."
+  }
+];
+
+const GLOSSARY = [
+  ["Sample statistic", "A value calculated from sample data (e.g. sample mean).", "Session 2"],
+  ["Population parameter", "A value calculated from an entire population (e.g. population mean, μ).", "Session 2"],
+  ["Point estimator", "A sample statistic used to estimate its matching population parameter.", "Session 2"],
+  ["Mean", "The arithmetic average of all data values.", "Session 2"],
+  ["Median", "The middle value of ordered data; robust to outliers.", "Session 2"],
+  ["Mode", "The most frequently occurring value in a data set.", "Session 2"],
+  ["Weighted mean", "A mean where each value is scaled by an importance weight before averaging.", "Session 2"],
+  ["Range", "Largest value minus smallest value.", "Session 2"],
+  ["Variance", "The average of the squared deviations from the mean.", "Session 2"],
+  ["Standard deviation", "The square root of the variance; in the same units as the original data.", "Session 2"],
+  ["Coefficient of variation", "Standard deviation as a percentage of the mean; used to compare variability across data sets.", "Session 2"],
+  ["Skewness", "A measure of a distribution's asymmetry; zero for symmetric data.", "Session 2"],
+  ["Covariance", "A measure of the direction of the linear relationship between two variables (not standardised).", "Session 2"],
+  ["Correlation coefficient", "A standardised (−1 to +1) measure of the strength and direction of a linear relationship.", "Session 2"],
+  ["Experiment", "A process that generates well-defined outcomes.", "Session 3"],
+  ["Sample space", "The set of all possible outcomes of an experiment.", "Session 3"],
+  ["Event", "A subset of the sample space — one or more outcomes.", "Session 3"],
+  ["Subjective probability", "A probability based on judgement or intuition rather than data.", "Session 3"],
+  ["Objective probability", "A probability that can be statistically verified through data or theory.", "Session 3"],
+  ["Complement", "The probability an event does not occur: 1 − P(A).", "Session 3"],
+  ["Union (A ∪ B)", "The event that A, B, or both occur.", "Session 3"],
+  ["Intersection (A ∩ B)", "The event that both A and B occur together.", "Session 3"],
+  ["Mutually exclusive events", "Events that cannot occur together; P(A ∩ B) = 0.", "Session 3"],
+  ["Collectively exhaustive events", "A set of events whose union covers the entire sample space.", "Session 3"],
+  ["Statistically independent events", "Events where one occurring has no effect on the probability of the other.", "Session 3"],
+  ["Marginal probability", "The probability of a single event, ignoring all others.", "Session 3"],
+  ["Joint probability", "The probability that two events occur together.", "Session 3"],
+  ["Conditional probability", "The probability of an event given that another event has already occurred.", "Session 3"],
+  ["Addition law", "Formula for P(A ∪ B); subtract the overlap unless events are mutually exclusive.", "Session 3"],
+  ["Multiplication law", "Formula for P(A ∩ B), using conditional probability (dependent) or a simple product (independent).", "Session 3"],
+  ["Probability tree", "A branching diagram used to compute probabilities across a sequence of events.", "Session 3"],
+  ["Factorial (n!)", "The product of all positive integers up to n; counts arrangements of n distinct objects.", "Session 3a"],
+  ["Permutation", "An ordered arrangement of r objects chosen from n, where order matters.", "Session 3a"],
+  ["Combination", "An unordered selection of r objects chosen from n, where order doesn't matter.", "Session 3a"],
+  ["Random variable", "A numerical description of the outcome of an experiment.", "Session 4"],
+  ["Discrete random variable", "A random variable with a finite or countably infinite set of possible values.", "Session 4"],
+  ["Continuous random variable", "A random variable that can take any value within an interval.", "Session 4"],
+  ["Probability distribution", "A table, graph, or formula describing how probability is spread across a variable's values.", "Session 4"],
+  ["Binomial experiment", "A fixed-trial experiment with two outcomes per trial, constant success probability, and independent trials.", "Session 4"],
+  ["Expected value", "The mean of a random variable's probability distribution.", "Session 4"],
+  ["Poisson distribution", "A discrete distribution named in the syllabus but not detailed in these slides — see your own notes.", "Session 4"],
+  ["Probability density function (PDF)", "A function whose area under the curve over an interval gives the probability of that interval.", "Session 5"],
+  ["Normal distribution", "A symmetric, bell-shaped continuous distribution defined by its mean and standard deviation.", "Session 5"],
+  ["Empirical rule", "68.3% / 95.4% / 99.7% of normal data fall within 1 / 2 / 3 standard deviations of the mean.", "Session 5"],
+  ["Standard normal distribution", "A normal distribution with mean 0 and standard deviation 1, using z-values.", "Session 5"],
+  ["Z-score / z-value", "The number of standard deviations a value lies from the mean: z = (x − μ) / σ.", "Session 5"]
+];
+
+// ---------------------------------------------------------------------
+// RENDERING
+// ---------------------------------------------------------------------
+
+function el(tag, cls, html) {
+  const e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (html !== undefined) e.innerHTML = html;
+  return e;
+}
+
+function renderTopicCard(t) {
+  const card = el("div", "card");
+  const head = el("div", "card-head");
+  head.appendChild(el("h3", "", t.title));
+  if (t.hot) {
+    const badge = el("span", "hot-badge", "☆ Exam favourite");
+    badge.title = t.hotReason || "";
+    head.appendChild(badge);
+  }
+  card.appendChild(head);
+
+  if (t.breakdown && t.breakdown.length) {
+    const ul = el("ul", "breakdown");
+    t.breakdown.forEach(b => ul.appendChild(el("li", "", b)));
+    card.appendChild(ul);
+  }
+
+  if (t.formula) {
+    const fb = el("div", "formula-box");
+    fb.appendChild(el("div", "flabel", "FORMULA"));
+    fb.appendChild(el("div", "", "$$" + t.formula + "$$"));
+    card.appendChild(fb);
+  }
+
+  if (t.analogy) {
+    const a = el("div", "analogy");
+    a.appendChild(el("span", "alabel", "ANALOGY"));
+    a.appendChild(document.createTextNode(""));
+    a.innerHTML += t.analogy;
+    card.appendChild(a);
+  }
+
+  if (t.example) {
+    const ex = el("div", "example");
+    ex.appendChild(el("span", "elabel", "WORKED EXAMPLE FROM THE SLIDES"));
+    ex.innerHTML += t.example;
+    card.appendChild(ex);
+  }
+
+  if (t.note) {
+    const gn = el("div", "gap-note");
+    gn.innerHTML = "<b>Note:</b> " + t.note;
+    card.appendChild(gn);
+  }
+
+  if (t.terms && t.terms.length) {
+    const tc = el("div", "terms");
+    t.terms.forEach(term => tc.appendChild(el("span", "term-chip", term)));
+    card.appendChild(tc);
+  }
+
+  return card;
+}
+
+function renderSectionPanel(sec) {
+  const panel = el("section", "panel");
+  panel.id = "panel-" + sec.id;
+
+  const head = el("div", "panel-head");
+  head.appendChild(el("div", "eyebrow", sec.number));
+  head.appendChild(el("h2", "", sec.title));
+  head.appendChild(el("p", "", sec.blurb));
+  panel.appendChild(head);
+
+  sec.topics.forEach(t => panel.appendChild(renderTopicCard(t)));
+  return panel;
+}
+
+function renderOverview() {
+  const panel = el("section", "panel active");
+  panel.id = "panel-overview";
+
+  const head = el("div", "panel-head");
+  head.appendChild(el("div", "eyebrow", "START HERE"));
+  head.appendChild(el("h2", "", "Five sessions, one thread"));
+  head.appendChild(el("p", "", "These five decks build on each other in one continuous line: describe a data set numerically → quantify uncertainty with probability → count outcomes efficiently → model discrete outcomes with the binomial → model continuous outcomes with the normal distribution. Tap a session below, or jump to the glossary and exam-focus tabs above."));
+  panel.appendChild(head);
+
+  const grid = el("div", "overview-grid");
+  SECTIONS.forEach(sec => {
+    const card = el("div", "ov-card");
+    card.appendChild(el("div", "n", sec.number));
+    card.appendChild(el("h4", "", sec.title));
+    card.appendChild(el("p", "", sec.blurb));
+    card.addEventListener("click", () => switchTab(sec.id));
+    grid.appendChild(card);
+  });
+  panel.appendChild(grid);
+
+  const howto = el("div", "howto");
+  howto.appendChild(el("h4", "", "HOW TO USE THIS GUIDE"));
+  const ul = el("ul");
+  [
+    "Each topic card has a plain-language <b>breakdown</b>, the exact <b>formula</b> where relevant, a memory-anchor <b>analogy</b>, and a worked example pulled from your own slides.",
+    "A <b>☆ Exam favourite</b> badge marks topics with repeated worked examples in the slides or strong overlap with typical business-statistics exam patterns — hover the badge for why.",
+    "Two topics are flagged as <b>content gaps</b> (Poisson distribution; Uniform &amp; Exponential distributions) — named in the learning objectives but not actually developed in the slides you uploaded.",
+    "Check the <b>Exam Focus</b> tab for a consolidated, ranked list, and the <b>Glossary</b> tab to search every key term in one place."
+  ].forEach(s => ul.appendChild(el("li", "", s)));
+  howto.appendChild(ul);
+  panel.appendChild(howto);
+
+  return panel;
+}
+
+function renderGlossary() {
+  const panel = el("section", "panel");
+  panel.id = "panel-glossary";
+  const head = el("div", "panel-head");
+  head.appendChild(el("div", "eyebrow", "REFERENCE"));
+  head.appendChild(el("h2", "", "Glossary of Key Terms"));
+  head.appendChild(el("p", "", "Every bolded term across all five sessions, in one searchable list."));
+  panel.appendChild(head);
+
+  const input = el("input", "glossary-search");
+  input.type = "text";
+  input.placeholder = "Search terms…";
+  panel.appendChild(input);
+
+  const grid = el("div", "glossary-grid");
+  GLOSSARY.forEach(([term, def, sess]) => {
+    const g = el("div", "gterm");
+    g.dataset.search = (term + " " + def).toLowerCase();
+    g.appendChild(el("div", "gt-term", term));
+    g.appendChild(el("div", "gt-def", def));
+    g.appendChild(el("span", "gt-session", sess));
+    grid.appendChild(g);
+  });
+  panel.appendChild(grid);
+
+  input.addEventListener("input", () => {
+    const q = input.value.toLowerCase();
+    grid.querySelectorAll(".gterm").forEach(g => {
+      g.style.display = g.dataset.search.includes(q) ? "" : "none";
+    });
+  });
+
+  return panel;
+}
+
+function renderExamFocus() {
+  const panel = el("section", "panel");
+  panel.id = "panel-examfocus";
+  const head = el("div", "panel-head");
+  head.appendChild(el("div", "eyebrow", "EXAM PREP"));
+  head.appendChild(el("h2", "", "Likely Hot Topics"));
+  head.appendChild(el("p", "", "A ranked shortlist of what's most worth prioritising."));
+  panel.appendChild(head);
+
+  const caveat = el("div", "caveat");
+  caveat.innerHTML = "<b>Honesty check:</b> I could not find verified, publicly available Botswana Accountancy College past papers or examiner reports for this specific course — none turned up in a search, and I won't guess at specific past questions I can't confirm. What follows instead is a reasoned shortlist based on two real signals: (1) which topics your own slides devote the most repeated worked examples to — lecturers tend to drill what they intend to examine — and (2) which topics recur across comparable Southern African business-statistics exam papers I could verify (University of Botswana, NUST, and similar). Treat this as a prioritisation guide, not a leak of actual exam content — always confirm against your lecturer's own past papers or study guide if you have access to them.";
+  panel.appendChild(caveat);
+
+  EXAM_FOCUS.forEach(f => {
+    const item = el("div", "focus-item");
+    item.appendChild(el("span", "sess", f.sess));
+    item.appendChild(el("h3", "", f.title));
+    item.appendChild(el("div", "why", f.why));
+    panel.appendChild(item);
+  });
+
+  return panel;
+}
+
+// ---------------------------------------------------------------------
+// TAB WIRING
+// ---------------------------------------------------------------------
+
+const TAB_DEFS = [
+  { id: "overview", label: "Overview" },
+  ...SECTIONS.map(s => ({ id: s.id, label: s.label })),
+  { id: "glossary", label: "Glossary" },
+  { id: "examfocus", label: "Exam Focus" }
+];
+
+const tabsNav = document.getElementById("tabs");
+const mainEl = document.getElementById("main");
+
+TAB_DEFS.forEach(t => {
+  const btn = document.createElement("button");
+  btn.textContent = t.label;
+  btn.dataset.tab = t.id;
+  btn.addEventListener("click", () => switchTab(t.id));
+  tabsNav.appendChild(btn);
+});
+
+mainEl.appendChild(renderOverview());
+SECTIONS.forEach(sec => mainEl.appendChild(renderSectionPanel(sec)));
+mainEl.appendChild(renderGlossary());
+mainEl.appendChild(renderExamFocus());
+
+function switchTab(id) {
+  document.querySelectorAll(".panel").forEach(p => p.classList.remove("active"));
+  document.getElementById("panel-" + id).classList.add("active");
+  document.querySelectorAll("nav.tabs button").forEach(b => {
+    b.classList.toggle("active", b.dataset.tab === id);
+  });
+  window.scrollTo({ top: 0, behavior: "instant" in window ? "instant" : "auto" });
+  if (window.MathJax && window.MathJax.typesetPromise) {
+    window.MathJax.typesetPromise([document.getElementById("panel-" + id)]);
+  }
+}
+
+switchTab("overview");
+</script>
+
+</body>
+</html>
